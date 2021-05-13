@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">HFRadioManager_V2</string>
+    <string name="freq_unit">Hz</string>
+    <string name="default_channel_index">999</string>
+    <string name="default_channel_name">CHANNEL NAME</string>
+    <string name="default_channel_freq">005876300</string>
+    <string name="default_channel_modulation">USB</string>
+    <string name="default_channel_pwr">HIGH PWR</string>
+    <string name="opmode_fix">Fixed Channel</string>
+
+
+    <string name="button_send">send</string>
+    <string name="edite_text_hint">Enter your message</string>
+    <string name="msg_received">已送達</string>
+    <string name="msg_sampl">wake up .. Neo</string>
+    <string name="msg_time_sample">2020/05/26 14:26:30</string>
+    <string name="msg_id_sample">Mia Khalifa</string>
+    <string name="msg_recv_sampl">Sorry.. I\'m Mia</string>
+
+</resources>

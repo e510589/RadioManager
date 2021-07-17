@@ -1,7 +1,5 @@
 package hf.yz.hfradiomanager_v2.utils.Data.User;
 
-import android.provider.ContactsContract;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.room.ColumnInfo;
@@ -16,47 +14,46 @@ import java.util.UUID;
 import hf.yz.hfradiomanager_v2.utils.Data.DataItem;
 
 @Entity(tableName = "Users")
-public final class User implements DataItem {
+public final class User extends DataItem {
 
     @PrimaryKey
     @ColumnInfo(name = "userid")
     @NonNull
     private String mId;
 
+    @ColumnInfo(name = "usertype")
+    @NonNull
+    private int userType;
+
     @NonNull
     @ColumnInfo(name = "username")
     private String mUserName;
 
-    @NonNull
-    @ColumnInfo(name = "last_update")
-    private Date mDate;
-
     @Ignore
-    public User(String userName) {
+    public User(@NonNull int userType,@NonNull String userName) {
         mId = UUID.randomUUID().toString();
+        this.userType = userType;
         mUserName = userName;
-        mDate = new Date(System.currentTimeMillis());
     }
 
-    public User(@NonNull String mId, @NonNull String mUserName, @NonNull Date mDate) {
+    public User(@NonNull String mId, int userType, @NonNull String mUserName) {
         this.mId = mId;
+        this.userType = userType;
         this.mUserName = mUserName;
-        this.mDate = mDate;
     }
 
     @NonNull
-    public String getmId() {
+    public String getMId() {
         return mId;
     }
 
-    @NonNull
-    public String getmUserName() {
-        return mUserName;
+    public int getUserType() {
+        return userType;
     }
 
     @NonNull
-    public Date getmDate() {
-        return mDate;
+    public String getMUserName() {
+        return mUserName;
     }
 
     @Override
@@ -65,13 +62,12 @@ public final class User implements DataItem {
         if (obj == null || getClass() != obj.getClass()) return false;
         User user = (User) obj;
         return Objects.equals(mId, user.mId) &&
-                Objects.equals(mUserName, user.mUserName) &&
-                Objects.equals(mDate, user.mDate);
+                Objects.equals(mUserName, user.mUserName);
     }
 
     @NonNull
     @Override
     public String toString() {
-        return "UserName: " + mUserName + ", ID: "+ mId + ", Last Update: " + mDate.toString();
+        return "UserName: " + mUserName + ", ID: "+ mId;
     }
 }

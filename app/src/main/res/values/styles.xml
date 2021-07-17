@@ -8,4 +8,10 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="loginbtn" parent="Widget.AppCompat.Button">
+
+        <item name="background">@drawable/background_btn_login</item>
+
+    </style>
+
 </resources>

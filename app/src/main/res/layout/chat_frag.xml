@@ -55,5 +55,14 @@
         android:layout_alignParentTop="true"
         android:layout_above="@+id/rl_msg_input"
         android:background="#000000"/>
+    <TextView
+        android:id="@+id/tv_noMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:text="Anything to say?">
+    </TextView>
+
 
 </RelativeLayout>

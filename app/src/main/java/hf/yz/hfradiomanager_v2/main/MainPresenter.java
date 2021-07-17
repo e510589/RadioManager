@@ -1,27 +1,27 @@
 package hf.yz.hfradiomanager_v2.main;
 
-import android.content.Context;
-
 import androidx.annotation.NonNull;
 
+import java.nio.file.attribute.UserPrincipalLookupService;
 import java.util.ArrayList;
+import java.util.List;
 
-import hf.yz.hfradiomanager_v2.chat.AddressItem;
-import hf.yz.hfradiomanager_v2.utils.db.DBHelper;
+import hf.yz.hfradiomanager_v2.utils.Data.DataItem;
+import hf.yz.hfradiomanager_v2.utils.Data.User.User;
+import hf.yz.hfradiomanager_v2.utils.Data.User.UserLocalDataSource;
 
 public class MainPresenter implements MainContract.Presenter {
 
-    private DBHelper mDbHelper;
+    private UserLocalDataSource userLocalDataSource;
+    private final MainContract.View mMainView;
 
 
-    public MainPresenter(MainContract.View mMainView, DBHelper dBHelper) {
+    public MainPresenter(@NonNull MainContract.View mMainView, UserLocalDataSource userLocalDataSource) {
 
-        if(mMainView != null){
-            mMainView.setPresenter(this);
-        }
+        this.mMainView = mMainView;
+        mMainView.setPresenter(this);
 
-        mDbHelper = dBHelper;
-        mDbHelper.openDatabase();
+        this.userLocalDataSource = userLocalDataSource;
     }
 
     @Override
@@ -30,22 +30,34 @@ public class MainPresenter implements MainContract.Presenter {
     }
 
     @Override
-    public String[] getFriendListFromRepo() {
+    public void getFriendListFromRepo(final int serviceType) {
 
-        String[] friendsList;
 
-        ArrayList<String> list = mDbHelper.getFriendList();
+        userLocalDataSource.getAllData(new UserLocalDataSource.OnDataLoadedCallBack() {
+            @Override
+            public void OnDataLoaded(List<User> users) {
+                String[] nameList = new String[users.size()];
+                ArrayList<User> userList = new ArrayList<>();
+                for (User user:users){
+                    userList.add(user);
+                }
 
-        friendsList = new String[list.size()];
+                for(int i = 0 ;i<nameList.length;i++){
+                    nameList[i] = userList.get(i).getMUserName();
+                }
 
-        for ( int i = 0 ; i < list.size() ; i ++)  friendsList[i] = list.get(i);
+                mMainView.showUserList(serviceType,nameList);
+            }
 
-        return friendsList;
+            @Override
+            public void OnDataNotAvailable() {
+                mMainView.showMessage("It seems you have no friends.");
+            }
+        });
     }
 
     @Override
     public void closeRepo() {
-        mDbHelper.closeDataBase();
     }
 
     @Override
@@ -56,5 +68,10 @@ public class MainPresenter implements MainContract.Presenter {
     @Override
     public void chnUp() {
 
+    }
+
+    public void test(){
+        userLocalDataSource.saveData(new User(UserLocalDataSource.USER_TYPE_INDI_USER,"Ruting"));
+        userLocalDataSource.saveData(new User(UserLocalDataSource.USER_TYPE_INDI_USER,"Alice"));
     }
 }

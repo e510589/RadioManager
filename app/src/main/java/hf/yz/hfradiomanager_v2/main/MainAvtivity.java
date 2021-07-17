@@ -9,7 +9,7 @@ import hf.yz.hfradiomanager_v2.R;
 import hf.yz.hfradiomanager_v2.TestCallBack;
 import hf.yz.hfradiomanager_v2.TextAPI;
 import hf.yz.hfradiomanager_v2.utils.ActivityUtils;
-import hf.yz.hfradiomanager_v2.utils.db.DBHelper;
+import hf.yz.hfradiomanager_v2.utils.Injection;
 
 public class MainAvtivity extends AppCompatActivity {
 
@@ -28,7 +28,7 @@ public class MainAvtivity extends AppCompatActivity {
             ActivityUtils.addFragmentToActivity(getSupportFragmentManager(),mainFragment,R.id.frm_main);
         }
 
-        mMainPresenter = new MainPresenter(mainFragment, new DBHelper(this));
+        mMainPresenter = new MainPresenter(mainFragment, Injection.provideUserLocalDataSource(this));
 
 
 

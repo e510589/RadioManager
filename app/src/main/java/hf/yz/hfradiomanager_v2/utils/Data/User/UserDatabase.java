@@ -12,7 +12,7 @@ import java.util.Objects;
 @Database(entities = {User.class},version = 1)
 public abstract class UserDatabase extends RoomDatabase {
 
-    private  static UserDatabase INSTANCE;
+    private static UserDatabase INSTANCE;
 
     public abstract UserDao userDao();
 

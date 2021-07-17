@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import hf.yz.hfradiomanager_v2.R;
 import hf.yz.hfradiomanager_v2.utils.ActivityUtils;
+import hf.yz.hfradiomanager_v2.utils.Injection;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -18,19 +19,12 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_act);
 
-
-        Log.d("Kevin","Activity onCreate");
-
         LoginFragment loginFragment = (LoginFragment) getSupportFragmentManager().findFragmentById(R.id.frm_login);
-
         if(loginFragment == null) {
             // Create the fragment
             loginFragment = LoginFragment.getInstance();
             ActivityUtils.addFragmentToActivity(getSupportFragmentManager(),loginFragment,R.id.frm_login);
         }
-
-        mLoginPresenter = new LoginPresenter(loginFragment);
+        mLoginPresenter = new LoginPresenter(loginFragment, Injection.provideUserLocalDataSource(this));
     }
-
-
 }

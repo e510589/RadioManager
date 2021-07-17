@@ -10,7 +10,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import hf.yz.hfradiomanager_v2.R;
 import hf.yz.hfradiomanager_v2.utils.ActivityUtils;
-import hf.yz.hfradiomanager_v2.utils.db.DBHelper;
+import hf.yz.hfradiomanager_v2.utils.Injection;
 
 public class ChatActivity extends AppCompatActivity {
 
@@ -32,7 +32,6 @@ public class ChatActivity extends AppCompatActivity {
         String ID = getIntent().getStringExtra(CURRENT_TARGET_USER_ID);
         mActionBar.setTitle(ID);
 
-
         ChatFragment chatFragment = (ChatFragment) getSupportFragmentManager().findFragmentById(R.id.frm_msg);
 
         if(chatFragment == null) {
@@ -42,6 +41,6 @@ public class ChatActivity extends AppCompatActivity {
             ActivityUtils.addFragmentToActivity(getSupportFragmentManager(),chatFragment,R.id.frm_msg);
         }
 
-        mChatPresenter = new ChatPresenter(chatFragment, new DBHelper(this));
+        mChatPresenter = new ChatPresenter(ID,chatFragment, Injection.provideMsgLocalDataSource(this));
     }
 }

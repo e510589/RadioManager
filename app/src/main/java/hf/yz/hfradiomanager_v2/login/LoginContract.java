@@ -7,23 +7,17 @@ public interface LoginContract {
 
     interface View extends BaseView<Presenter>{
 
+        void onUserInfoGet(String username);
+
+        void onUserInfoNotAvaliable();
+
         void clearEditText();
 
         void hideEditText(boolean state);
 
         void setLoginMsg(String msg);
 
-        void setProcedureMsg(String Msg);
-
-        void hidProcedureMsg(boolean state);
-
-        void setProgress(int progress);
-
-        void hidProgressBar(boolean state);
-
-        void hideButton(boolean state);
-
-        void showMainPageUI();
+        void startMainActivity();
 
         boolean isActive();
 
@@ -31,11 +25,10 @@ public interface LoginContract {
 
     interface Presenter extends BasePresenter{
 
-        void checkIO();
 
-        void runBootProcedure();
+        void login(String password);
 
-        void sendPassword(String password);
+        void newUserLogin(String username,String password);
 
 
 

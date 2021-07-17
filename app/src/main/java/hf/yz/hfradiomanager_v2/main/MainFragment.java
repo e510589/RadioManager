@@ -32,8 +32,6 @@ import hf.yz.hfradiomanager_v2.chat.ChatActivity;
 
 public class MainFragment extends Fragment implements MainContract.View {
 
-
-
     private MainContract.Presenter mPresenter;
 
     public static MainFragment getInstance(){
@@ -44,8 +42,8 @@ public class MainFragment extends Fragment implements MainContract.View {
 
     private TextView tvOpMode, tvChnIndex, tvOpFreq, tvChnName, tvModulationMode, tvOutputPwr, tvFunctionName;
 
-    private String[] userlist;
-
+    public static final int SERVICE_TYPE_CHAT = 0;
+    public static final int SERVICE_TYPE_PHONE = 1;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -108,39 +106,17 @@ public class MainFragment extends Fragment implements MainContract.View {
 
                 switch (imageID){
                     case R.drawable.imv_chat:
-                        userlist = mPresenter.getFriendListFromRepo();
-
-                        new AlertDialog.Builder(Objects.requireNonNull(MainFragment.this.getContext())).setSingleChoiceItems(userlist, 0, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                Intent intent = new Intent(getContext(), ChatActivity.class);
-                                intent.putExtra(ChatActivity.CURRENT_TARGET_USER_ID, userlist[which]);
-                                startActivity(intent);
-                                mPresenter.closeRepo();
-                                dialog.dismiss();
-                            }
-                        }).setPositiveButton("cancel", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                            }
-                        }).show();
-
+                        mPresenter.getFriendListFromRepo(SERVICE_TYPE_CHAT);
                         break;
                     case R.drawable.imv_phone:
-
-                        new AlertDialog.Builder(Objects.requireNonNull(MainFragment.this.getContext())).setMessage("phone").setPositiveButton("ok", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        }).show();
-
+                        mPresenter.getFriendListFromRepo(SERVICE_TYPE_PHONE);
                         break;
                     case R.drawable.imv_setting:
 
                         new AlertDialog.Builder(Objects.requireNonNull(MainFragment.this.getContext())).setMessage("setting").setPositiveButton("ok", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
+                                mPresenter.test();
                                 dialog.dismiss();
                             }
                         }).show();
@@ -258,4 +234,42 @@ public class MainFragment extends Fragment implements MainContract.View {
     public boolean isActive() {
         return isAdded();
     }
+
+
+    @Override
+    public void showUserList(final int serviceType, final String[] users) {
+        new AlertDialog.Builder(Objects.requireNonNull(MainFragment.this.getContext())).setSingleChoiceItems(users, 0, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch(serviceType){
+                    case SERVICE_TYPE_CHAT:
+
+                        Intent intent = new Intent(getContext(), ChatActivity.class);
+                        intent.putExtra(ChatActivity.CURRENT_TARGET_USER_ID, users[which]);
+                        startActivity(intent);
+                        dialog.dismiss();
+
+                        break;
+                    case SERVICE_TYPE_PHONE:
+                        break;
+                }
+            }
+        }).setPositiveButton("cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        }).show();
+    }
+
+    @Override
+    public void showDialog(String msg) {
+        new AlertDialog.Builder(Objects.requireNonNull(MainFragment.this.getContext())).setMessage(msg).setPositiveButton("ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        }).show();
+    }
+
+
 }

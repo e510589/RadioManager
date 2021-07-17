@@ -2,9 +2,10 @@ package hf.yz.hfradiomanager_v2.main;
 
 import android.content.Context;
 
+import java.util.List;
+
 import hf.yz.hfradiomanager_v2.BasePresenter;
 import hf.yz.hfradiomanager_v2.BaseView;
-import hf.yz.hfradiomanager_v2.utils.db.DBHelper;
 
 public interface MainContract {
 
@@ -26,6 +27,10 @@ public interface MainContract {
 
         void showMessage(String message);
 
+        void showUserList(int serviceType,String[] users);
+
+        void showDialog(String msg);
+
         boolean isActive();
 
     }
@@ -36,9 +41,11 @@ public interface MainContract {
 
         void chnUp();
 
-        String[] getFriendListFromRepo();
+        void getFriendListFromRepo(int serviceType);
 
         void closeRepo();
+
+        void test();
 
     }
 }

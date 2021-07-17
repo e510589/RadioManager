@@ -7,18 +7,26 @@ import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Dao
 public interface UserDao {
 
     /**
+     * Get self user information;
+     * @return
+     */
+    @Query("SELECT * FROM Users WHERE usertype = 0")
+    User getSelfUser();
+
+    /**
      * Select all users from the users table.
      *
      * @return all Users.
      */
-    @Query("SELECT * FROM Users")
-    List<User> getUsers();
+    @Query("SELECT * FROM Users WHERE usertype = 1")
+    List<User> getIndiUsers();
 
     /**
      * Select user by name.
@@ -50,12 +58,10 @@ public interface UserDao {
      * @param user user to be updated.
      * @return the number of user updated.
      */
-    @Update
+    @Update()
     int updateUser(User user);
 
-
-
-
-
+    @Delete
+    void deleteUser(User user);
 
 }

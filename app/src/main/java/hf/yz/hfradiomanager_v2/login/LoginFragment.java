@@ -6,14 +6,19 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ProgressBar;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 import hf.yz.hfradiomanager_v2.R;
 import hf.yz.hfradiomanager_v2.main.MainAvtivity;
@@ -22,13 +27,15 @@ public class LoginFragment extends Fragment implements LoginContract.View {
 
     private LoginContract.Presenter mPresenter;
 
-    private TextView tv_login,tv_procedure;
+    private TextInputLayout til_username, til_password;
 
-    private EditText edt_password;
+    private TextInputEditText tie_username, tie_password;
 
-    private ProgressBar pgb_login;
+    private Button btn_login;
 
-    private Button btn_send;
+    private TextView tv_login;
+
+    private ImageView imv;
 
     public LoginFragment(){
 
@@ -58,42 +65,156 @@ public class LoginFragment extends Fragment implements LoginContract.View {
 
         Log.d("Kevin","fragment onCreateView");
 
-        View rootView = inflater.inflate(R.layout.login_frag,container,false);
+        View rootView = inflater.inflate(R.layout.login2_frag,container,false);
 
-        tv_login = rootView.findViewById(R.id.tv_login_msg);
+        imv = rootView.findViewById(R.id.img_logo);
 
-        tv_procedure = rootView.findViewById(R.id.tv_procedure);
+        tv_login = rootView.findViewById(R.id.tv_login);
 
-        edt_password = rootView.findViewById(R.id.edt_password);
+        til_username = rootView.findViewById(R.id.til_username);
 
-        pgb_login = rootView.findViewById(R.id.pgb_login);
+        til_password = rootView.findViewById(R.id.til_password);
 
-        btn_send = rootView.findViewById(R.id.btn_login);
+        tie_username = rootView.findViewById(R.id.tie_username);
 
-        btn_send.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d("Kevin", "Button Login Clicked!");
-                mPresenter.sendPassword(edt_password.getText().toString());
-            }
-        });
+        tie_password = rootView.findViewById(R.id.tie_password);
+
+        btn_login = rootView.findViewById(R.id.btn_login);
+
+        imageFadeIn(imv);
 
         return rootView;
     }
 
+    @Override
+    public void onUserInfoGet(String username) {
+        tv_login.setText("Hello!"+username);
+        textViewFadeIn(tv_login);
+        tv_login.setVisibility(View.VISIBLE);
+        viewFadein(til_password);
+        viewFadein(btn_login);
+        til_password.setVisibility(View.VISIBLE);
+        btn_login.setVisibility(View.VISIBLE);
+        btn_login.setOnClickListener(onClickListener_preset_user);
+    }
 
+    @Override
+    public void onUserInfoNotAvaliable() {
+        tv_login.setText("New guy?");
+        textViewFadeIn(tv_login);
+        tv_login.setVisibility(View.VISIBLE);
+        til_username.setHint("New Username");
+        til_password.setHint("New password");
+        viewFadein(til_username);
+        viewFadein(til_password);
+        viewFadein(btn_login);
+        til_username.setVisibility(View.VISIBLE);
+        til_password.setVisibility(View.VISIBLE);
+        btn_login.setVisibility(View.VISIBLE);
+        btn_login.setOnClickListener(onClickListener_new_user);
+    }
+
+    private View.OnClickListener onClickListener_preset_user = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            mPresenter.login(tie_password.getText().toString());
+        }
+    };
+
+    private View.OnClickListener onClickListener_new_user = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            mPresenter.newUserLogin(tie_username.getText().toString(),tie_password.getText().toString());
+        }
+    };
+
+    private void imageFadeIn(ImageView view){
+
+        Animation fadeIn = new AlphaAnimation(0, 1);
+        fadeIn.setInterpolator(new AccelerateInterpolator());
+        fadeIn.setDuration(2000);
+
+        fadeIn.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+                //Check if locol user info has been set
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                mPresenter.start();
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+
+        view.startAnimation(fadeIn);
+
+    }
+
+    private void textViewFadeIn(TextView textView){
+
+        Animation fadeIn = new AlphaAnimation(0, 1);
+        fadeIn.setInterpolator(new AccelerateInterpolator());
+        fadeIn.setDuration(2000);
+
+        fadeIn.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+
+        textView.startAnimation(fadeIn);
+
+    }
+
+    private void viewFadein(View view){
+        Animation fadeIn = new AlphaAnimation(0, 1);
+        fadeIn.setInterpolator(new AccelerateInterpolator());
+        fadeIn.setDuration(2000);
+
+        fadeIn.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+
+        view.setAnimation(fadeIn);
+    }
 
     @Override
     public void clearEditText() {
-        edt_password.setText("");
+
     }
 
     @Override
     public void hideEditText(boolean state) {
-        if(state)
-            edt_password.setVisibility(View.GONE);
-        else
-            edt_password.setVisibility(View.VISIBLE);
+
     }
 
     @Override
@@ -101,42 +222,9 @@ public class LoginFragment extends Fragment implements LoginContract.View {
         tv_login.setText(msg);
     }
 
-    @Override
-    public void setProcedureMsg(String Msg) {
-        tv_procedure.setText(Msg);
-    }
 
     @Override
-    public void hidProcedureMsg(boolean state) {
-        if(state)
-            tv_procedure.setVisibility(View.GONE);
-        else
-            tv_procedure.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void setProgress(int progress) {
-        pgb_login.setProgress(progress);
-    }
-
-    @Override
-    public void hidProgressBar(boolean state) {
-        if(state)
-            pgb_login.setVisibility(View.GONE);
-        else
-            pgb_login.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void hideButton(boolean state) {
-        if(state)
-            btn_send.setVisibility(View.GONE);
-        else
-            btn_send.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void showMainPageUI() {
+    public void startMainActivity() {
         Log.d("Kevin", "About to switch Activity");
 
         Intent intent = new Intent(getContext(), MainAvtivity.class);

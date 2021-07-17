@@ -1,43 +1,59 @@
 package hf.yz.hfradiomanager_v2.chat;
 
+import androidx.recyclerview.widget.RecyclerView;
+
 import java.util.ArrayList;
 
 import hf.yz.hfradiomanager_v2.BasePresenter;
 import hf.yz.hfradiomanager_v2.BaseView;
-import hf.yz.hfradiomanager_v2.utils.db.DBHelper;
+import hf.yz.hfradiomanager_v2.utils.Data.Message.Message;
 
 public interface ChatContract {
 
     interface View extends BaseView<Presenter> {
 
-        void scrollToEnd();
+        void showMessages();
 
-        void newMessageSend(MsgItem item);
+        void showNoMessage();
 
-        void messageReceivedAcked(int messageID);
+        void addNewMessageSend();
 
-        void inComingMessage(MsgItem item);
+        void updateNewMessage(int index);
+
+        void messageRecv();
 
         void setSiteName(String name);
 
-        void clearEditText();
-
         void setSendButtonDisable(boolean state);
 
-        void returnMainPage();
 
-        void returnLoginPage();
-
-        boolean isActive();
     }
 
     interface Presenter extends BasePresenter {
 
-        boolean sendMsg(MsgItem item);
+        void sendMsg(String textInput);
 
-        void loadMsgRecord();
+        void onBindMessageViewHolder(RecyclerView.ViewHolder viewHolder,int position);
 
-        ArrayList<MsgItem> getMsgList(String ID);
+        int getItemViewType(int position);
+
+        int getItemcount();
+
+        void test_On_MessageClicked(int position);
+
+    }
+
+    interface SendViewHolder {
+        void setMsg(String msg);
+        void setTime(String time);
+        void setRecv(boolean isRecv);
+        void setOnClick(int position);
+    }
+
+    interface RecvViewHolder{
+        void setMsg(String msg);
+        void setTime(String time);
+        void setSourceID(final String sourceID);
 
     }
 }

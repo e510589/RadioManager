@@ -12,16 +12,18 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import hf.yz.hfradiomanager_v2.R;
+import hf.yz.hfradiomanager_v2.main.MLog;
+import hf.yz.hfradiomanager_v2.utils.Data.Message.Message;
 
 public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private ArrayList<MsgItem> msgList;
 
-    private static final int TYPE_SEND = 0;
-    private static final int TYPE_RECV = 1;
+    private ChatContract.Presenter mPresenter;
 
-    public ChatAdapter(ArrayList<MsgItem> msgList) {
-        this.msgList = msgList;
+    public static final int TYPE_SEND = 0;
+    public static final int TYPE_RECV = 1;
+
+    public ChatAdapter() {
     }
 
     @NonNull
@@ -50,33 +52,22 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        int type = msgList.get(position).getMessageType();
-        if (type == TYPE_SEND){
-            ((MsgSendViewHolder)holder).setMsg(msgList.get(position).getContent());
-            ((MsgSendViewHolder)holder).setTime(msgList.get(position).getTime());
-            if(msgList.get(position).getReceived()) ((MsgSendViewHolder)holder).setRecv();
-        }else if (type == TYPE_RECV){
-
-            ((MsgReceivedViewHolder)holder).setMsg(msgList.get(position).getContent());
-            ((MsgReceivedViewHolder)holder).setTime(msgList.get(position).getTime());
-            ((MsgReceivedViewHolder)holder).setTvSourceID(msgList.get(position).getSourceID());
-        }
+        mPresenter.onBindMessageViewHolder(holder,position);
     }
 
     @Override
     public int getItemViewType(int position) {
-
-        return msgList.get(position).getMessageType();
+        return mPresenter.getItemViewType(position);
     }
 
     @Override
     public int getItemCount() {
-        return msgList.size();
+        return mPresenter.getItemcount();
     }
 
 
 
-    class MsgSendViewHolder extends RecyclerView.ViewHolder{
+    class MsgSendViewHolder extends RecyclerView.ViewHolder implements ChatContract.SendViewHolder{
 
         private TextView tvMsg, tvTime;
 
@@ -88,23 +79,42 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             tvMsg = itemView.findViewById(R.id.tv_tx_msg);
             tvTime = itemView.findViewById(R.id.tv_tx_msg_time);
             imvAck = itemView.findViewById(R.id.imv_chat_ack);
-            imvAck.setVisibility(View.INVISIBLE);
+            imvAck.setVisibility(View.GONE);
         }
 
-        void setMsg(String content){
-            tvMsg.setText(content);
+        @Override
+        public void setMsg(String msg) {
+            tvMsg.setText(msg);
         }
 
-        void setTime(String time){
+        @Override
+        public void setTime(String time) {
             tvTime.setText(time);
         }
 
-        void setRecv(){
-            imvAck.setVisibility(View.VISIBLE);
+        @Override
+        public void setRecv(boolean isRecv) {
+            if (isRecv){
+                imvAck.setVisibility(View.VISIBLE);
+            }else {
+                imvAck.setVisibility(View.INVISIBLE);
+            }
+
+        }
+
+        @Override
+        public void setOnClick(final int position) {
+            tvMsg.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    MLog.showDebug(this.toString(),"Msg on Clicked!");
+                    mPresenter.test_On_MessageClicked(position);
+                }
+            });
         }
     }
 
-    class MsgReceivedViewHolder extends RecyclerView.ViewHolder{
+    class MsgReceivedViewHolder extends RecyclerView.ViewHolder implements ChatContract.RecvViewHolder{
 
         private TextView tvMsg, tvTime, tvSourceID;
 
@@ -115,18 +125,38 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             tvSourceID = itemView.findViewById(R.id.tv_rx_msg_sorce_id);
         }
 
-        void setTvSourceID(String id){
-            tvSourceID.setText(id);
+
+        @Override
+        public void setMsg(String msg) {
+            tvMsg.setText(msg);
         }
 
-        void setMsg(String content){
-            tvMsg.setText(content);
-        }
-
-        void setTime(String time){
+        @Override
+        public void setTime(String time) {
             tvTime.setText(time);
         }
 
+        @Override
+        public void setSourceID(String sourceID) {
+            tvSourceID.setText(sourceID);
+        }
+    }
 
+    public void updateData(){
+        this.notifyDataSetChanged();
+        MLog.showDebug(this.toString(),"Msglist on UI has been updated.");
+    }
+
+    public void upateDate(int index){
+        this.notifyItemChanged(index);
+    }
+
+    public void addNewDate(){
+        this.notifyDataSetChanged();
+        MLog.showDebug(this.toString(),"new Message Added");
+    }
+
+    public void setmPresenter(ChatContract.Presenter presenter){
+        this.mPresenter = presenter;
     }
 }
